@@ -1,12 +1,14 @@
 import java.time.LocalDate;
-
 import java.time.LocalTime;
-
 import java.util.Scanner;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 
 
 public class App {
-
 
    public String getPlan(LocalDate date, String weather, LocalTime firstAppointment, LocalTime lastAppointment) {
 
@@ -76,103 +78,72 @@ public class App {
        LocalTime firstAppointment;
        LocalTime lastAppointment;
 
-
        String weather;
+
+       API_Handler api = new API_Handler();
+        String response = api.pullAPI();
+        System.out.println(response);
 
        // Input validation for date
 
        do {
-
            System.out.println("Enter the date (YYYY-MM-DD): ");
 
            try {
-
                date = LocalDate.parse(scanner.nextLine());
-
                break; // Break the loop if date is successfully parsed
-
            } catch (Exception e) {
-
                System.out.println("Invalid date format. Please enter in YYYY-MM-DD format.");
-
            }
-
        } while (true);
-
 
        // Input validation for weather
 
        do {
-
            System.out.println("Enter the weather prediction (Rainy/Snowy/Cloudy/Sunny): ");
-
            weather = scanner.nextLine();
 
            if (!weather.equalsIgnoreCase("Rainy") && !weather.equalsIgnoreCase("Snowy") &&
-
                !weather.equalsIgnoreCase("Cloudy") && !weather.equalsIgnoreCase("Sunny")) {
-
                System.out.println("Invalid weather prediction. Please enter Rainy, Snowy, Cloudy, or Sunny.");
-
            } else {
-
                break; // Break the loop if weather prediction is valid
-
            }
-
        } while (true);
 
 
        // Input validation for first appointment time
 
        do {
-
            System.out.println("Enter the time of the first appointment (HH:MM): ");
 
            try {
-
                firstAppointment = LocalTime.parse(scanner.nextLine());
-
                break; // Break the loop if time is successfully parsed
-
            } catch (Exception e) {
-
                System.out.println("Invalid time format. Please enter in HH:MM format.");
-
            }
-
        } while (true);
 
 
        // Input validation for last appointment time
 
        do {
-
            System.out.println("Enter the time of the last appointment (HH:MM): ");
 
            try {
-
                lastAppointment = LocalTime.parse(scanner.nextLine());
-
                break; // Break the loop if time is successfully parsed
-
            } catch (Exception e) {
-
                System.out.println("Invalid time format. Please enter in HH:MM format.");
-
            }
-
        } while (true);
 
 
        // Check if last appointment is after first appointment
 
        if (lastAppointment.isBefore(firstAppointment)) {
-
            System.out.println("Last appointment time should be after first appointment time.");
-
-           return;
-
        }
 
 
@@ -182,4 +153,34 @@ public class App {
        scanner.close();
    }
 
+   public static class API_Handler {
+    public static String pullAPI(){
+        try {
+            // Construct the URL
+            String apiUrl = "https://api.tomorrow.io/v4/weather/forecast?location=boston&timesteps=daily&apikey=lTyr47R57VmoPFcX79tn87iz5KLYzI89";
+            URL url = new URL(apiUrl);
+
+            // Open the connection
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("GET");
+
+            // Get the response
+            BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+            String inputLine;
+            StringBuilder response = new StringBuilder();
+
+            while ((inputLine = in.readLine()) != null) {
+                response.append(inputLine);
+            }
+            in.close();
+
+            connection.disconnect();
+
+            return response.toString();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+        }
+    }
 }
