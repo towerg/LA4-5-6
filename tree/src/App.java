@@ -81,21 +81,13 @@ public class App {
        String weather;
 
        API_Handler api = new API_Handler();
-        String response = api.pullAPI();
-        System.out.println(response);
+       String response = api.pullAPI();
 
        // Input validation for date
 
-       do {
-           System.out.println("Enter the date (YYYY-MM-DD): ");
-
-           try {
-               date = LocalDate.parse(scanner.nextLine());
-               break; // Break the loop if date is successfully parsed
-           } catch (Exception e) {
-               System.out.println("Invalid date format. Please enter in YYYY-MM-DD format.");
-           }
-       } while (true);
+       // Get the date from the user
+       System.out.println("Enter the date (YYYY-MM-DD): ");
+       date = LocalDate.parse(scanner.nextLine());
 
        // Input validation for weather
 
@@ -111,19 +103,8 @@ public class App {
            }
        } while (true);
 
-
-       // Input validation for first appointment time
-
-       do {
-           System.out.println("Enter the time of the first appointment (HH:MM): ");
-
-           try {
-               firstAppointment = LocalTime.parse(scanner.nextLine());
-               break; // Break the loop if time is successfully parsed
-           } catch (Exception e) {
-               System.out.println("Invalid time format. Please enter in HH:MM format.");
-           }
-       } while (true);
+       System.out.println("Enter the time of the first appointment (HH:MM): ");
+       firstAppointment = LocalTime.parse(scanner.nextLine());
 
 
        // Input validation for last appointment time
